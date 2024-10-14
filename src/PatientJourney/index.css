@@ -1,0 +1,114 @@
+/* General form styling */
+form {
+    width: 60%;
+    margin: 0 auto; /* Centers the form horizontally */
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Headings */
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  /* Fieldset styling */
+  fieldset {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Align labels and inputs */
+  label {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Input fields styling */
+  input[type="text"],
+  input[type="date"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="file"],
+  textarea,
+  select {
+    width: calc(100% - 160px); /* Adjust to align with labels */
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+  }
+  
+  textarea {
+    height: 80px;
+  }
+  
+  input[type="radio"] {
+    margin-left: 10px;
+  }
+  
+  /* Align fields like ID Proof, ID Proof Number next to each other */
+  fieldset select,
+  fieldset input[type="text"] {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
+  }
+  
+  /* Button Styling */
+  button[type="submit"] {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  /* Profile Picture Upload - Top right alignment */
+  label[for="profilePhoto"] {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-weight: bold;
+  }
+  
+  input[type="file"] {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+  }
+  
+  /* Centering the captcha checkbox */
+  input[type="checkbox"] {
+    margin-left: 150px;
+  }
+
+  .profile-photo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  
