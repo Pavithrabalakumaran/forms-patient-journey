@@ -1,4 +1,3 @@
-// src/ConsultationForm.js
 import React, { useState } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
@@ -12,6 +11,7 @@ const ConsultationForm = ({ appointment, onComplete }) => {
       prescriptions: [{ medicationName: '', dosageInstructions: '', duration: '' }],
       labTests: [{ testName: '', testInstructions: '', labResultsUrl: '' }],
       followUpDate: new Date(),
+      testType: '',
     },
   });
 
@@ -29,6 +29,27 @@ const ConsultationForm = ({ appointment, onComplete }) => {
   const [followUp, setFollowUp] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
 
+  // Define test prices
+  const testPrices = {
+    'H1bc': 300,
+    'Glucose': 150,
+    'Blood Sugar Level': 200,
+    'Kidney Test': 500,
+    'Liver Function Test': 600,
+  };
+
+  const [selectedTest, setSelectedTest] = useState('');
+  const [testCost, setTestCost] = useState(0);
+
+  const onTestChange = (e) => {
+    const selected = e.target.value;
+    setSelectedTest(selected);
+    setTestCost(testPrices[selected] || 0);
+  };
+
+  const consultationFee = 500;
+  const totalCost = consultationFee + testCost;
+
   const onSubmit = (data) => {
     // Prepare the data to be displayed
     const processedData = {
@@ -36,15 +57,11 @@ const ConsultationForm = ({ appointment, onComplete }) => {
       labTests: optOutMonitoring ? [] : data.labTests.filter(test => test.testName.trim() !== ''),
     };
 
-    // Set the submitted data to state for display
     setSubmittedData(processedData);
-
-    // Reset the form
     reset();
     setFollowUp(false);
     setOptOutMonitoring(false);
 
-    // Notify parent component if necessary
     if (onComplete) onComplete();
   };
 
@@ -161,6 +178,25 @@ const ConsultationForm = ({ appointment, onComplete }) => {
           )}
         </div>
 
+        {/* Billing Section */}
+        <div style={styles.formGroup}>
+          <label>Billing & Payment</label>
+          <div>
+            <p>Consultation Fee: ₹{consultationFee}</p>
+            <label>Lab Test:</label>
+            <select value={selectedTest} onChange={onTestChange} style={styles.select}>
+              <option value="">Select a Test</option>
+              {Object.keys(testPrices).map((test, idx) => (
+                <option key={idx} value={test}>
+                  {test} - ₹{testPrices[test]}
+                </option>
+              ))}
+            </select>
+            {selectedTest && <p>Test Charge: ₹{testCost}</p>}
+            <h4>Total Cost: ₹{totalCost}</h4>
+          </div>
+        </div>
+
         {/* Schedule Follow-Up Appointment */}
         <div style={styles.formGroup}>
           <label>
@@ -227,98 +263,93 @@ const ConsultationForm = ({ appointment, onComplete }) => {
           )}
 
           {submittedData.followUpDate && (
-            <p><strong>Follow-Up Appointment:</strong> {new Date(submittedData.followUpDate).toLocaleString()}</p>
+            <p>
+              <strong>Follow-Up Appointment:</strong> {submittedData.followUpDate.toLocaleString()}
+            </p>
           )}
+
+          <h4>Billing Summary:</h4>
+          <p>Consultation Fee: ₹{consultationFee}</p>
+          {selectedTest && <p>Lab Test ({selectedTest}): ₹{testCost}</p>}
+          <p><strong>Total Cost: ₹{totalCost}</strong></p>
         </div>
       )}
     </div>
   );
 };
 
-// Inline styles for simplicity; consider using CSS or styled-components for larger projects
 const styles = {
   container: {
-    border: '1px solid #ccc',
     padding: '20px',
-    borderRadius: '5px',
-    maxWidth: '800px',
-    margin: '20px auto',
-    backgroundColor: '#f9f9f9',
+    fontFamily: 'Arial, sans-serif',
   },
   formGroup: {
-    marginBottom: '20px',
+    marginBottom: '15px',
   },
   input: {
-    width: '30%',
     padding: '8px',
-    fontSize: '16px',
-    marginRight: '10px',
-    marginBottom: '10px',
+    margin: '5px',
+    width: 'calc(100% - 20px)',
     border: '1px solid #ccc',
     borderRadius: '4px',
   },
   textarea: {
+    padding: '10px',
     width: '100%',
     height: '80px',
-    padding: '8px',
-    fontSize: '16px',
     border: '1px solid #ccc',
     borderRadius: '4px',
-    resize: 'vertical',
-  },
-  addButton: {
-    padding: '8px 12px',
-    fontSize: '14px',
-    cursor: 'pointer',
-    marginTop: '10px',
-    backgroundColor: '#1890ff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-  },
-  removeButton: {
-    padding: '4px 8px',
-    fontSize: '12px',
-    cursor: 'pointer',
-    backgroundColor: '#ff4d4f',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '3px',
-    marginLeft: '10px',
-  },
-  submitButton: {
-    padding: '10px 20px',
-    fontSize: '16px',
-    cursor: 'pointer',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-  },
-  error: {
-    color: 'red',
-    fontSize: '14px',
   },
   dynamicField: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '10px',
-    flexWrap: 'wrap',
   },
-  checkboxGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '10px',
+  removeButton: {
+    marginLeft: '10px',
+    padding: '5px 10px',
+    backgroundColor: '#f44336',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  addButton: {
+    padding: '10px',
+    backgroundColor: '#4CAF50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  select: {
+    padding: '8px',
+    width: '100%',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  },
+  submitButton: {
+    padding: '10px 20px',
+    backgroundColor: '#008CBA',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   },
   datePicker: {
     marginTop: '10px',
   },
+  error: {
+    color: 'red',
+    fontSize: '12px',
+  },
   submittedData: {
-    marginTop: '30px',
-    padding: '20px',
-    border: '1px solid #4CAF50',
+    marginTop: '20px',
+    padding: '10px',
+    backgroundColor: '#f4f4f4',
     borderRadius: '5px',
-    backgroundColor: '#e6ffed',
+  },
+  checkboxGroup: {
+    marginBottom: '10px',
   },
 };
 
